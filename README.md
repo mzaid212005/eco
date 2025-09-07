@@ -66,6 +66,7 @@ ecologic/
    ```bash
    python manage.py migrate
    ```
+   This will create the default staff accounts automatically.
 
 5. **Create staff accounts:**
    ```bash
