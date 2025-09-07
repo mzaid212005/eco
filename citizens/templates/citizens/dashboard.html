@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Dashboard - Ecologic{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-black text-white mb-2">Your Dashboard</h1>
+                    <p class="text-white/80 text-lg">Track your impact and continue making a difference! 🌟</p>
+                </div>
+                <div class="text-right">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-black text-yellow-300">{{ user.userprofile.points }}</div>
+                            <div class="text-white/80 text-sm">Points Earned</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-black text-green-300">₹{{ user.userprofile.total_rewards }}</div>
+                            <div class="text-white/80 text-sm">Rewards Earned</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <a href="{% url 'report_issue' %}" class="group glass-morphism p-6 rounded-3xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 shadow-2xl">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-teal-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="plus-circle" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">Report New Issue</h3>
+                        <p class="text-white/80">Help improve your community</p>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-green-300">
+                    <span class="text-sm font-medium">Get started</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </div>
+            </a>
+
+            <div class="glass-morphism p-6 rounded-3xl">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center">
+                        <i data-lucide="bar-chart-3" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">Your Stats</h3>
+                        <p class="text-white/80">{{ issues|length }} issues reported</p>
+                        <p class="text-green-300 font-semibold">₹{{ user.userprofile.total_rewards }} in rewards</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'leaderboard' %}" class="group glass-morphism p-6 rounded-3xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="trophy" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1">Leaderboard</h3>
+                        <p class="text-white/80">See your ranking</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Issues Section -->
+        <div class="glass-morphism rounded-3xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-black text-white">Your Reported Issues</h2>
+                <div class="flex items-center space-x-2 text-white/80">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                    <span class="font-medium">{{ issues|length }} Total</span>
+                </div>
+            </div>
+
+            {% if issues %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for issue in issues %}
+                        <div class="group bg-white/10 backdrop-blur-sm p-6 rounded-2xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 border border-white/20">
+                            {% if issue.image %}
+                                <div class="w-full h-32 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl mb-4 flex items-center justify-center">
+                                    <i data-lucide="image" class="w-8 h-8 text-white/60"></i>
+                                </div>
+                            {% endif %}
+
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold
+                                    {% if issue.status == 'Pending' %}bg-yellow-100 text-yellow-800{% endif %}
+                                    {% if issue.status == 'In Progress' %}bg-blue-100 text-blue-800{% endif %}
+                                    {% if issue.status == 'Resolved' %}bg-green-100 text-green-800{% endif %}">
+                                    <i data-lucide="{% if issue.status == 'Pending' %}clock{% elif issue.status == 'In Progress' %}loader{% else %}check-circle{% endif %}" class="w-3 h-3 mr-1"></i>
+                                    {{ issue.status }}
+                                </span>
+                                <span class="text-white/60 text-sm">{{ issue.category.name }}</span>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-yellow-300 transition-colors duration-300">
+                                {{ issue.title }}
+                            </h3>
+                            <p class="text-white/80 text-sm mb-4 line-clamp-2">{{ issue.description }}</p>
+
+                            <div class="flex items-center justify-between text-xs text-white/60">
+                                <span>{{ issue.created_at|date:"M d, Y" }}</span>
+                                {% if issue.status == 'Resolved' %}
+                                    <span class="text-green-300 font-medium">+10 points</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-12">
+                    <div class="w-24 h-24 bg-gradient-to-br from-gray-400 to-gray-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="file-x" class="w-12 h-12 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">No Issues Reported Yet</h3>
+                    <p class="text-white/80 mb-6">Start making a difference by reporting your first issue!</p>
+                    <a href="{% url 'report_issue' %}" class="inline-flex items-center bg-gradient-to-r from-green-500 to-teal-600 text-white px-8 py-3 rounded-2xl font-bold hover:from-green-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-2xl">
+                        <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+                        Report Your First Issue
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Achievement Section -->
+        {% if user.userprofile.points > 0 %}
+        <div class="mt-8 glass-morphism rounded-3xl p-8">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <i data-lucide="award" class="w-6 h-6 mr-3 text-yellow-400"></i>
+                Your Achievements
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% if user.userprofile.points >= 10 %}
+                <div class="text-center p-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl">
+                    <i data-lucide="star" class="w-8 h-8 text-white mx-auto mb-2"></i>
+                    <p class="text-white font-bold">First Issue</p>
+                    <p class="text-white/80 text-sm">Resolved 1 issue</p>
+                </div>
+                {% endif %}
+                {% if user.userprofile.points >= 50 %}
+                <div class="text-center p-4 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl">
+                    <i data-lucide="trophy" class="w-8 h-8 text-white mx-auto mb-2"></i>
+                    <p class="text-white font-bold">Community Hero</p>
+                    <p class="text-white/80 text-sm">50+ points</p>
+                </div>
+                {% endif %}
+                {% if user.userprofile.points >= 100 %}
+                <div class="text-center p-4 bg-gradient-to-br from-green-400 to-teal-500 rounded-2xl">
+                    <i data-lucide="medal" class="w-8 h-8 text-white mx-auto mb-2"></i>
+                    <p class="text-white font-bold">Super Contributor</p>
+                    <p class="text-white/80 text-sm">100+ points</p>
+                </div>
+                {% endif %}
+                {% if user.userprofile.points >= 200 %}
+                <div class="text-center p-4 bg-gradient-to-br from-pink-400 to-red-500 rounded-2xl">
+                    <i data-lucide="crown" class="w-8 h-8 text-white mx-auto mb-2"></i>
+                    <p class="text-white font-bold">Legend</p>
+                    <p class="text-white/80 text-sm">200+ points</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+</script>
+{% endblock %}

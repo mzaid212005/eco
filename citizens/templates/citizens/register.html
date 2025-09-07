@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Join Ecologic - Citizen Registration{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <div class="mx-auto w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl flex items-center justify-center mb-8 shadow-2xl">
+                <i data-lucide="user-plus" class="w-10 h-10 text-white"></i>
+            </div>
+            <h2 class="text-4xl font-black text-white mb-2">Join Ecologic</h2>
+            <p class="text-white/80 text-lg">Start your journey to make your city better! 🌟</p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="glass-morphism p-8 rounded-3xl shadow-2xl">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-bold text-white mb-2">
+                        <i data-lucide="user" class="w-4 h-4 inline mr-2"></i>Username
+                    </label>
+                    <div class="relative">
+                        {{ form.username }}
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-400 opacity-0" id="username-check"></i>
+                        </div>
+                    </div>
+                    {% if form.username.errors %}
+                        <p class="mt-1 text-sm text-red-400">{{ form.username.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-bold text-white mb-2">
+                        <i data-lucide="mail" class="w-4 h-4 inline mr-2"></i>Email Address
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="mt-1 text-sm text-red-400">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Password 1 -->
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-bold text-white mb-2">
+                        <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>Password
+                    </label>
+                    <div class="relative">
+                        {{ form.password1 }}
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <i data-lucide="eye" class="w-5 h-5 text-white/60 cursor-pointer" id="toggle-password1"></i>
+                        </div>
+                    </div>
+                    {% if form.password1.errors %}
+                        <p class="mt-1 text-sm text-red-400">{{ form.password1.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Password 2 -->
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-bold text-white mb-2">
+                        <i data-lucide="lock" class="w-4 h-4 inline mr-2"></i>Confirm Password
+                    </label>
+                    <div class="relative">
+                        {{ form.password2 }}
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <i data-lucide="eye" class="w-5 h-5 text-white/60 cursor-pointer" id="toggle-password2"></i>
+                        </div>
+                    </div>
+                    {% if form.password2.errors %}
+                        <p class="mt-1 text-sm text-red-400">{{ form.password2.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="group w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black py-4 px-6 rounded-2xl text-lg font-bold hover:from-yellow-300 hover:to-orange-400 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-yellow-500/50">
+                    <span class="flex items-center justify-center space-x-3">
+                        <i data-lucide="rocket" class="w-6 h-6 group-hover:animate-bounce"></i>
+                        <span>Create Account</span>
+                        <i data-lucide="arrow-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </span>
+                </button>
+            </form>
+
+            <!-- Login Link -->
+            <div class="mt-6 text-center">
+                <p class="text-white/80">Already have an account?
+                    <a href="{% url 'citizen_login' %}" class="font-bold text-yellow-300 hover:text-yellow-200 transition-colors duration-300 ml-2">
+                        Sign In Here →
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="glass-morphism p-4 rounded-2xl">
+                <i data-lucide="shield" class="w-8 h-8 text-green-400 mx-auto mb-2"></i>
+                <p class="text-white text-sm font-medium">Secure</p>
+            </div>
+            <div class="glass-morphism p-4 rounded-2xl">
+                <i data-lucide="zap" class="w-8 h-8 text-yellow-400 mx-auto mb-2"></i>
+                <p class="text-white text-sm font-medium">Fast</p>
+            </div>
+            <div class="glass-morphism p-4 rounded-2xl">
+                <i data-lucide="heart" class="w-8 h-8 text-pink-400 mx-auto mb-2"></i>
+                <p class="text-white text-sm font-medium">Trusted</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="email"], input[type="password"] {
+        @apply w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent backdrop-blur-sm transition-all duration-300;
+    }
+</style>
+
+<script>
+    // Password toggle functionality
+    document.getElementById('toggle-password1').addEventListener('click', function() {
+        const password = document.getElementById('{{ form.password1.id_for_label }}');
+        const icon = this;
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.setAttribute('data-lucide', 'eye-off');
+        } else {
+            password.type = 'password';
+            icon.setAttribute('data-lucide', 'eye');
+        }
+        lucide.createIcons();
+    });
+
+    document.getElementById('toggle-password2').addEventListener('click', function() {
+        const password = document.getElementById('{{ form.password2.id_for_label }}');
+        const icon = this;
+        if (password.type === 'password') {
+            password.type = 'text';
+            icon.setAttribute('data-lucide', 'eye-off');
+        } else {
+            password.type = 'password';
+            icon.setAttribute('data-lucide', 'eye');
+        }
+        lucide.createIcons();
+    });
+
+    // Username validation
+    document.getElementById('{{ form.username.id_for_label }}').addEventListener('input', function() {
+        const checkIcon = document.getElementById('username-check');
+        if (this.value.length >= 3) {
+            checkIcon.style.opacity = '1';
+        } else {
+            checkIcon.style.opacity = '0';
+        }
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+</script>
+{% endblock %}

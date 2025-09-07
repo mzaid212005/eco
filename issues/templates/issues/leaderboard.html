@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Top Contributors</h2>
+    <table class="w-full table-auto">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="px-4 py-2">Rank</th>
+                <th class="px-4 py-2">User</th>
+                <th class="px-4 py-2">Points</th>
+                <th class="px-4 py-2">Earnings</th>
+                <th class="px-4 py-2">Badges</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profile in top_users %}
+                <tr class="border-b">
+                    <td class="px-4 py-2">{{ forloop.counter }}</td>
+                    <td class="px-4 py-2">{{ profile.user.username }}</td>
+                    <td class="px-4 py-2">{{ profile.points }}</td>
+                    <td class="px-4 py-2">₹{{ profile.total_rewards }}</td>
+                    <td class="px-4 py-2">{{ profile.badges|join:', ' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

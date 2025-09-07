@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Rewards - Staff Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-black text-white mb-2">
+                        <span class="bg-gradient-to-r from-green-300 to-emerald-300 bg-clip-text text-transparent">
+                            Manage Rewards
+                        </span>
+                    </h1>
+                    <p class="text-white/80">Allot monetary rewards to citizens for their contributions</p>
+                </div>
+                <a href="{% url 'staff_dashboard' %}" class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    <span>Back to Dashboard</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Allot New Reward -->
+            <div class="lg:col-span-1">
+                <div class="glass-morphism p-6 rounded-3xl shadow-2xl">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                        <i data-lucide="plus-circle" class="w-6 h-6 mr-2 text-green-400"></i>
+                        Allot New Reward
+                    </h3>
+
+                    <form method="post" action="{% url 'allot_reward' %}" class="space-y-4">
+                        {% csrf_token %}
+
+                        <div>
+                            <label for="user" class="block text-sm font-bold text-white mb-2">
+                                <i data-lucide="user" class="w-4 h-4 inline mr-2"></i>Select Citizen
+                            </label>
+                            <select name="user" id="user" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent" required>
+                                <option value="">Choose a citizen...</option>
+                                {% for user in users %}
+                                    <option value="{{ user.id }}">{{ user.username }} ({{ user.email }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="issue" class="block text-sm font-bold text-white mb-2">
+                                <i data-lucide="file-text" class="w-4 h-4 inline mr-2"></i>Related Issue (Optional)
+                            </label>
+                            <select name="issue" id="issue" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent">
+                                <option value="">Select issue...</option>
+                                {% for issue in issues %}
+                                    <option value="{{ issue.id }}">{{ issue.title }} ({{ issue.status }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="amount" class="block text-sm font-bold text-white mb-2">
+                                <i data-lucide="dollar-sign" class="w-4 h-4 inline mr-2"></i>Reward Amount (₹)
+                            </label>
+                            <input type="number" name="amount" id="amount" step="0.01" min="0" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent" placeholder="Enter amount..." required>
+                        </div>
+
+                        <div>
+                            <label for="reason" class="block text-sm font-bold text-white mb-2">
+                                <i data-lucide="message-square" class="w-4 h-4 inline mr-2"></i>Reason
+                            </label>
+                            <textarea name="reason" id="reason" rows="3" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent" placeholder="Reason for reward..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-green-500/25 flex items-center justify-center space-x-2">
+                            <i data-lucide="gift" class="w-5 h-5"></i>
+                            <span>Allot Reward</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Rewards List -->
+            <div class="lg:col-span-2">
+                <div class="glass-morphism p-6 rounded-3xl shadow-2xl">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                        <i data-lucide="trophy" class="w-6 h-6 mr-2 text-yellow-400"></i>
+                        Reward History
+                    </h3>
+
+                    {% if rewards %}
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
+                            {% for reward in rewards %}
+                                <div class="bg-white/10 rounded-xl p-4 border border-white/20">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                                                <i data-lucide="dollar-sign" class="w-5 h-5 text-white"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-white font-semibold">{{ reward.user.username }}</h4>
+                                                <p class="text-white/60 text-sm">{{ reward.allotted_at|date:"M d, Y H:i" }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-2xl font-black text-green-300">₹{{ reward.amount }}</div>
+                                            <div class="text-sm text-white/60">Status: {{ reward.status }}</div>
+                                        </div>
+                                    </div>
+
+                                    <p class="text-white/80 mb-3">{{ reward.reason }}</p>
+
+                                    {% if reward.issue %}
+                                        <div class="bg-white/5 rounded-lg p-3 mb-3">
+                                            <p class="text-white/70 text-sm">
+                                                <i data-lucide="file-text" class="w-4 h-4 inline mr-1"></i>
+                                                Related Issue: {{ reward.issue.title }}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+
+                                    <!-- Status Update Form -->
+                                    {% if reward.status != 'Paid' %}
+                                        <form method="post" action="{% url 'update_reward_status' reward.id %}" class="flex items-center space-x-2">
+                                            {% csrf_token %}
+                                            <select name="status" class="px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:ring-1 focus:ring-green-400">
+                                                <option value="Pending" {% if reward.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                                <option value="Approved" {% if reward.status == 'Approved' %}selected{% endif %}>Approved</option>
+                                                <option value="Paid" {% if reward.status == 'Paid' %}selected{% endif %}>Paid</option>
+                                                <option value="Rejected" {% if reward.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                                            </select>
+                                            {% if reward.status == 'Paid' %}
+                                                <input type="text" name="payment_reference" placeholder="Payment ref..." class="px-3 py-1 bg-white/10 border border-white/20 rounded-lg text-white text-sm placeholder-white/50 focus:outline-none focus:ring-1 focus:ring-green-400" required>
+                                            {% endif %}
+                                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors duration-300">
+                                                Update
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <div class="flex items-center space-x-2 text-green-400">
+                                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                            <span class="text-sm font-medium">Paid on {{ reward.paid_at|date:"M d, Y" }}</span>
+                                            {% if reward.payment_reference %}
+                                                <span class="text-xs text-white/60">({{ reward.payment_reference }})</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-12">
+                            <i data-lucide="gift" class="w-16 h-16 text-white/30 mx-auto mb-4"></i>
+                            <h4 class="text-white/60 font-medium mb-2">No rewards allotted yet</h4>
+                            <p class="text-white/40 text-sm">Start by allotting rewards to citizens for their contributions!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="mt-8">
+            <div class="glass-morphism p-6 rounded-3xl shadow-2xl">
+                <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6 mr-2 text-purple-400"></i>
+                    Reward Statistics
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="dollar-sign" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <div class="text-2xl font-black text-green-300 mb-1">
+                            ₹{{ total_reward_value }}
+                        </div>
+                        <div class="text-white/60 text-sm">Total Rewards Value</div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="users" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <div class="text-2xl font-black text-blue-300 mb-1">
+                            {{ users|length }}
+                        </div>
+                        <div class="text-white/60 text-sm">Active Citizens</div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="check-circle" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <div class="text-2xl font-black text-yellow-300 mb-1">
+                            {{ rewards|length }}
+                        </div>
+                        <div class="text-white/60 text-sm">Rewards Allotted</div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="trending-up" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <div class="text-2xl font-black text-purple-300 mb-1">
+                            ₹{{ average_reward }}
+                        </div>
+                        <div class="text-white/60 text-sm">Average Reward</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Form enhancements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-fill amount based on issue priority
+        const issueSelect = document.getElementById('issue');
+        const amountInput = document.getElementById('amount');
+
+        issueSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const issueText = selectedOption.text.toLowerCase();
+
+            // Suggest amount based on issue content
+            let suggestedAmount = 50; // Default
+            if (issueText.includes('critical') || issueText.includes('high')) {
+                suggestedAmount = 200;
+            } else if (issueText.includes('medium')) {
+                suggestedAmount = 100;
+            }
+
+            if (this.value && amountInput.value === '') {
+                amountInput.value = suggestedAmount;
+            }
+        });
+
+        // Form validation
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const amount = parseFloat(form.querySelector('input[name="amount"]')?.value || 0);
+                if (amount <= 0) {
+                    e.preventDefault();
+                    showNotification('Please enter a valid amount greater than 0.', 'error');
+                    return;
+                }
+
+                if (amount > 10000) {
+                    if (!confirm('Are you sure you want to allot such a large amount?')) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+            });
+        });
+    });
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        lucide.createIcons();
+
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+</script>
+{% endblock %}

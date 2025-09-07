@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff Dashboard{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Staff Navigation -->
+<div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 mb-6 rounded-lg shadow-lg">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+                <i data-lucide="shield" class="w-6 h-6"></i>
+                <h1 class="text-2xl font-bold">Staff Dashboard</h1>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="{% url 'manage_rewards' %}" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center space-x-2">
+                <i data-lucide="gift" class="w-5 h-5"></i>
+                <span>Manage Rewards</span>
+            </a>
+            <a href="{% url 'logout' %}" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-bold mb-4">Analytics</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-blue-100 p-4 rounded">
+            <h3 class="font-bold">Total Issues</h3>
+            <p class="text-2xl">{{ total_issues }}</p>
+        </div>
+        <div class="bg-yellow-100 p-4 rounded">
+            <h3 class="font-bold">Pending</h3>
+            <p class="text-2xl">{{ pending_count }}</p>
+        </div>
+        <div class="bg-green-100 p-4 rounded">
+            <h3 class="font-bold">Resolved</h3>
+            <p class="text-2xl">{{ resolved_count }}</p>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <canvas id="statusChart"></canvas>
+        </div>
+        <div>
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Reported Issues</h2>
+    <form method="get" class="mb-4">
+        <div class="flex space-x-4">
+            <select name="category" class="border px-3 py-2 rounded">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.name }}" {% if request.GET.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+            <select name="status" class="border px-3 py-2 rounded">
+                <option value="">All Statuses</option>
+                <option value="Pending" {% if request.GET.status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="In Progress" {% if request.GET.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Resolved" {% if request.GET.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Filter</button>
+        </div>
+    </form>
+    {% if issues %}
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">Title</th>
+                    <th class="px-4 py-2">Category</th>
+                    <th class="px-4 py-2">Priority</th>
+                    <th class="px-4 py-2">Status</th>
+                    <th class="px-4 py-2">Reported By</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                    <tr class="border-b">
+                        <td class="px-4 py-2">{{ issue.title }}</td>
+                        <td class="px-4 py-2">{{ issue.category.name }}</td>
+                        <td class="px-4 py-2">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium
+                                {% if issue.priority == 'Low' %}bg-green-100 text-green-800{% endif %}
+                                {% if issue.priority == 'Medium' %}bg-yellow-100 text-yellow-800{% endif %}
+                                {% if issue.priority == 'High' %}bg-orange-100 text-orange-800{% endif %}
+                                {% if issue.priority == 'Critical' %}bg-red-100 text-red-800{% endif %}">
+                                {{ issue.priority }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-2">{{ issue.status }}</td>
+                        <td class="px-4 py-2">{{ issue.reported_by.username }}</td>
+                        <td class="px-4 py-2">
+                            <form method="post" action="{% url 'update_status' issue.id %}" class="inline">
+                                {% csrf_token %}
+                                <select name="status" class="border px-2 py-1 rounded">
+                                    <option value="Pending" {% if issue.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="In Progress" {% if issue.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="Resolved" {% if issue.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                </select>
+                                <button type="submit" class="bg-green-500 text-white py-1 px-2 rounded ml-2">Update</button>
+                            </form>
+                            {% if not issue.published %}
+                                <form method="post" action="{% url 'publish_issue' issue.id %}" class="inline ml-2 flex items-center space-x-2">
+                                    {% csrf_token %}
+                                    <input type="number" name="bounty_amount" step="0.01" min="0" placeholder="₹0.00" class="w-20 px-2 py-1 text-sm border rounded">
+                                    <button type="submit" class="bg-blue-500 text-white py-1 px-2 rounded text-sm">Publish</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No issues reported.</p>
+    {% endif %}
+</div>
+
+<script>
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(statusCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Pending', 'In Progress', 'Resolved'],
+            datasets: [{
+                data: {{ status_data|safe }},
+                backgroundColor: ['#fbbf24', '#3b82f6', '#10b981']
+            }]
+        }
+    });
+
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryChart = new Chart(categoryCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ category_labels|safe }},
+            datasets: [{
+                label: 'Issues by Category',
+                data: {{ category_data|safe }},
+                backgroundColor: '#3b82f6'
+            }]
+        }
+    });
+</script>
+{% endblock %}

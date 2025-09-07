@@ -1,0 +1,489 @@
+{% extends 'base.html' %}
+
+{% block title %}Report New Issue - Ecologic{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full mb-6">
+                <i data-lucide="plus-circle" class="w-5 h-5 text-yellow-300"></i>
+                <span class="text-white font-medium">Report a New Issue</span>
+                <i data-lucide="plus-circle" class="w-5 h-5 text-yellow-300"></i>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-white mb-4">
+                Help Improve Your <span class="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">Community</span>
+            </h1>
+            <p class="text-xl text-white/80 max-w-2xl mx-auto">
+                Report issues, upload photos, and earn points while making your city better! 📸✨
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Form -->
+            <div class="lg:col-span-2">
+                <div class="glass-morphism p-8 rounded-3xl shadow-2xl">
+                    <form method="post" enctype="multipart/form-data" class="space-y-6">
+                        {% csrf_token %}
+
+                        <!-- Title -->
+                        <div>
+                            <label for="{{ form.title.id_for_label }}" class="block text-sm font-bold text-white mb-3">
+                                <i data-lucide="type" class="w-5 h-5 inline mr-2"></i>Issue Title
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.title.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Category -->
+                        <div>
+                            <label for="{{ form.category.id_for_label }}" class="block text-sm font-bold text-white mb-3">
+                                <i data-lucide="tag" class="w-5 h-5 inline mr-2"></i>Category *
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.category.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Priority Level -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 inline mr-2"></i>Priority Level *
+                            </label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="flex items-center space-x-2 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-colors">
+                                    <input type="radio" name="priority" value="Low" class="text-green-500 focus:ring-green-500" {% if form.priority.value == 'Low' %}checked{% endif %}>
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="arrow-down" class="w-4 h-4 text-green-400"></i>
+                                        <span class="text-white font-medium">Low</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-2 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-colors">
+                                    <input type="radio" name="priority" value="Medium" class="text-yellow-500 focus:ring-yellow-500" {% if form.priority.value == 'Medium' or not form.priority.value %}checked{% endif %}>
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="minus" class="w-4 h-4 text-yellow-400"></i>
+                                        <span class="text-white font-medium">Medium</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-2 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-colors">
+                                    <input type="radio" name="priority" value="High" class="text-orange-500 focus:ring-orange-500" {% if form.priority.value == 'High' %}checked{% endif %}>
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="arrow-up" class="w-4 h-4 text-orange-400"></i>
+                                        <span class="text-white font-medium">High</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-2 p-3 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 transition-colors">
+                                    <input type="radio" name="priority" value="Critical" class="text-red-500 focus:ring-red-500" {% if form.priority.value == 'Critical' %}checked{% endif %}>
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i>
+                                        <span class="text-white font-medium">Critical</span>
+                                    </div>
+                                </label>
+                            </div>
+                            {% if form.priority.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.priority.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label for="{{ form.description.id_for_label }}" class="block text-sm font-bold text-white mb-3">
+                                <i data-lucide="file-text" class="w-5 h-5 inline mr-2"></i>Description
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.description.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Location Section -->
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-3">
+                                <i data-lucide="map-pin" class="w-5 h-5 inline mr-2"></i>Location (Required) *
+                            </label>
+
+                            <!-- GPS Option -->
+                            <div class="mb-4">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="useGPS" name="use_current_location" class="w-5 h-5 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500" {% if form.use_current_location.value %}checked{% endif %}>
+                                    <span class="text-white font-medium">Use my current GPS location</span>
+                                    <i data-lucide="navigation" class="w-4 h-4 text-blue-400"></i>
+                                </label>
+
+                                <div id="gpsStatus" class="hidden mt-3 p-3 bg-blue-500/20 border border-blue-400/30 rounded-lg">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="loading-spinner w-4 h-4"></div>
+                                        <span class="text-blue-300 text-sm">Getting your location...</span>
+                                    </div>
+                                </div>
+
+                                <div id="gpsSuccess" class="hidden mt-3 p-3 bg-green-500/20 border border-green-400/30 rounded-lg">
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+                                        <span class="text-green-300 text-sm">Location detected successfully!</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Manual Address -->
+                            <div>
+                                <label for="manualAddress" class="block text-sm font-medium text-white/80 mb-2">
+                                    Or enter address manually:
+                                </label>
+                                <input type="text" name="manual_address" id="manualAddress" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent backdrop-blur-sm transition-all duration-300" placeholder="Enter full address..." value="{{ form.manual_address.value }}">
+                                {% if form.manual_address.errors %}
+                                    <p class="mt-1 text-sm text-red-400">{{ form.manual_address.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Image Upload (Required) -->
+                        <div>
+                            <label for="imageUpload" class="block text-sm font-bold text-white mb-3">
+                                <i data-lucide="camera" class="w-5 h-5 inline mr-2"></i>Photo of the Issue (Required) *
+                            </label>
+                            <div class="relative">
+                                <input type="file" name="image" id="imageUpload" accept="image/*" class="hidden" required>
+                                <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/30 rounded-xl cursor-pointer hover:border-yellow-400 hover:bg-white/5 transition-all duration-300">
+                                    <div class="text-center">
+                                        <i data-lucide="upload" class="w-8 h-8 text-white/60 mb-2"></i>
+                                        <p class="text-white/80 font-medium">Click to upload image</p>
+                                        <p class="text-white/60 text-sm">PNG, JPG, GIF up to 10MB</p>
+                                    </div>
+                                </label>
+                                <div id="imagePreview" class="hidden mt-3">
+                                    <img id="previewImg" class="max-w-full h-32 object-cover rounded-lg border border-white/20">
+                                </div>
+                            </div>
+                            {% if form.image.errors %}
+                                <p class="mt-1 text-sm text-red-400">{{ form.image.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Hidden GPS fields -->
+                        <input type="hidden" name="latitude" id="latitude">
+                        <input type="hidden" name="longitude" id="longitude">
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="group w-full bg-gradient-to-r from-green-500 to-teal-600 text-white py-4 px-6 rounded-2xl text-lg font-bold hover:from-green-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-2xl hover:shadow-green-500/50">
+                            <span class="flex items-center justify-center space-x-3">
+                                <i data-lucide="send" class="w-6 h-6 group-hover:animate-pulse"></i>
+                                <span>Submit Issue</span>
+                                <i data-lucide="arrow-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- AI Assistant Chatbot -->
+                <div class="glass-morphism p-6 rounded-3xl">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
+                            <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">AI Assistant</h3>
+                    </div>
+                    <div id="chatbox" class="bg-white/10 rounded-xl p-4 h-48 overflow-y-auto mb-4 text-sm">
+                        <div class="text-white/80">
+                            <p><strong>🤖 Bot:</strong> Hi! I'm here to help you report issues. What type of problem are you experiencing?</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="text" id="chatInput" placeholder="Ask me anything..."
+                               class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm">
+                        <button onclick="sendMessage()" class="bg-cyan-500 hover:bg-cyan-600 text-white p-2 rounded-lg transition-colors duration-300">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tips -->
+                <div class="glass-morphism p-6 rounded-3xl">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                        <i data-lucide="lightbulb" class="w-5 h-5 mr-2 text-yellow-400"></i>
+                        Pro Tips
+                    </h3>
+                    <ul class="space-y-3 text-sm text-white/80">
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                            <span>Be specific about the location</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                            <span>Upload clear photos when possible</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                            <span>Earn 10 points for each resolved issue</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                            <span>Check status updates regularly</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="glass-morphism p-6 rounded-3xl">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 mr-2 text-purple-400"></i>
+                        Your Impact
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-white/80">Issues Reported</span>
+                            <span class="text-white font-bold">{{ issues|length }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-white/80">Points Earned</span>
+                            <span class="text-yellow-300 font-bold">{{ user.userprofile.points }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-white/80">Current Rank</span>
+                            <span class="text-purple-300 font-bold">#{{ user.userprofile.points|add:"1" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"], textarea, select {
+        @apply w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent backdrop-blur-sm transition-all duration-300;
+    }
+
+    input[type="file"] {
+        @apply w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-yellow-400 file:text-black hover:file:bg-yellow-300 transition-all duration-300;
+    }
+</style>
+
+<script>
+    // GPS functionality
+    const useGPSCheckbox = document.getElementById('useGPS');
+    const manualAddressInput = document.getElementById('manualAddress');
+    const gpsStatus = document.getElementById('gpsStatus');
+    const gpsSuccess = document.getElementById('gpsSuccess');
+    const latitudeInput = document.getElementById('latitude');
+    const longitudeInput = document.getElementById('longitude');
+    const imageUpload = document.getElementById('imageUpload');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+
+    // GPS event listeners
+    useGPSCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            getCurrentLocation();
+        } else {
+            hideGPSStatus();
+            manualAddressInput.required = true;
+        }
+    });
+
+    function getCurrentLocation() {
+        if (navigator.geolocation) {
+            gpsStatus.classList.remove('hidden');
+            gpsSuccess.classList.add('hidden');
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    latitudeInput.value = latitude;
+                    longitudeInput.value = longitude;
+
+                    gpsStatus.classList.add('hidden');
+                    gpsSuccess.classList.remove('hidden');
+                    manualAddressInput.required = false;
+
+                    // Optional: Reverse geocode to get address
+                    getAddressFromCoordinates(latitude, longitude);
+                },
+                function(error) {
+                    console.error('GPS Error:', error);
+                    gpsStatus.classList.add('hidden');
+                    showNotification('Unable to get your location. Please enter address manually.', 'error');
+                    useGPSCheckbox.checked = false;
+                    manualAddressInput.required = true;
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 300000
+                }
+            );
+        } else {
+            showNotification('Geolocation is not supported by this browser.', 'error');
+            useGPSCheckbox.checked = false;
+            manualAddressInput.required = true;
+        }
+    }
+
+    function hideGPSStatus() {
+        gpsStatus.classList.add('hidden');
+        gpsSuccess.classList.add('hidden');
+    }
+
+    function getAddressFromCoordinates(lat, lng) {
+        // This is a simple reverse geocoding example
+        // In production, you'd use a service like Google Maps API
+        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.city && data.countryName) {
+                    const address = `${data.city}, ${data.countryName}`;
+                    manualAddressInput.value = address;
+                }
+            })
+            .catch(error => {
+                console.log('Reverse geocoding failed:', error);
+            });
+    }
+
+    // Image preview functionality
+    imageUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.classList.add('hidden');
+        }
+    });
+
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const imageFile = imageUpload.files[0];
+            const useGPS = useGPSCheckbox.checked;
+            const manualAddr = manualAddressInput.value.trim();
+
+            // Validate image
+            if (!imageFile) {
+                e.preventDefault();
+                showNotification('Please upload an image of the issue.', 'error');
+                return;
+            }
+
+            // Validate location
+            if (!useGPS && !manualAddr) {
+                e.preventDefault();
+                showNotification('Please provide a location either by GPS or manual address.', 'error');
+                return;
+            }
+
+            // Validate image size (max 10MB)
+            if (imageFile.size > 10 * 1024 * 1024) {
+                e.preventDefault();
+                showNotification('Image size must be less than 10MB.', 'error');
+                return;
+            }
+        });
+
+        // Auto-detect location on page load if GPS is enabled
+        if (useGPSCheckbox.checked) {
+            setTimeout(() => {
+                getCurrentLocation();
+            }, 1000);
+        }
+    });
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'alert-circle' : 'info'}" class="w-5 h-5"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        lucide.createIcons();
+
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Chatbot functionality
+    const chatbox = document.getElementById('chatbox');
+    const chatInput = document.getElementById('chatInput');
+
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message === '') return;
+
+        // Add user message
+        appendMessage('👤 You: ' + message);
+        chatInput.value = '';
+
+        // Simple bot responses
+        let response = '🤖 Bot: ';
+        const lowerMessage = message.toLowerCase();
+
+        if (lowerMessage.includes('category') || lowerMessage.includes('type')) {
+            response += 'We have categories like Gutter, Garbage, Streetlight, Water, and Other. Choose the most appropriate one! 📂';
+        } else if (lowerMessage.includes('photo') || lowerMessage.includes('image')) {
+            response += 'Photos help a lot! Try to capture the issue clearly from different angles. 📸';
+        } else if (lowerMessage.includes('location') || lowerMessage.includes('gps')) {
+            response += 'You can use GPS for automatic location detection or enter address manually! 📍';
+        } else if (lowerMessage.includes('priority')) {
+            response += 'Set priority based on urgency: Low (minor), Medium (normal), High (important), Critical (emergency)! ⚡';
+        } else if (lowerMessage.includes('points') || lowerMessage.includes('reward')) {
+            response += 'You earn 10 points for each resolved issue! Keep contributing to climb the leaderboard! 🏆';
+        } else {
+            response += 'Thanks for reporting! Our AI will help categorize your issue. You can track progress in your dashboard. 🚀';
+        }
+
+        setTimeout(() => appendMessage(response), 500);
+    }
+
+    function appendMessage(message) {
+        const div = document.createElement('div');
+        div.className = 'mb-2 text-white/90';
+        div.innerHTML = message;
+        chatbox.appendChild(div);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    // Enter key support for chat
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Form enhancements
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-yellow-400');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-yellow-400');
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,641 @@
+{% extends 'base.html' %}
+
+{% block title %}Ecologic - Smart Civic Engagement Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative py-32 overflow-hidden">
+    <div class="absolute inset-0">
+        <div class="absolute top-20 left-20 w-32 h-32 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-bounce"></div>
+        <div class="absolute top-40 right-20 w-32 h-32 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+        <div class="absolute bottom-20 left-1/3 w-32 h-32 bg-green-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-ping"></div>
+        <div class="absolute top-1/3 right-1/4 w-24 h-24 bg-teal-400 rounded-full mix-blend-multiply filter blur-xl opacity-60 float" style="animation-delay: 1s;"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="animate-on-scroll">
+            <div class="inline-flex items-center space-x-2 glass-morphism px-6 py-3 rounded-full mb-8 border border-white/20">
+                <i data-lucide="sparkles" class="w-5 h-5 text-blue-300"></i>
+                <span class="text-white font-medium">Welcome to the Future of Civic Engagement</span>
+                <i data-lucide="sparkles" class="w-5 h-5 text-purple-300"></i>
+            </div>
+
+            <h1 class="text-6xl md:text-8xl font-black mb-8">
+                <span class="bg-gradient-to-r from-blue-300 via-purple-300 to-teal-300 bg-clip-text text-transparent animate-pulse">
+                    Ecologic
+                </span>
+                <br>
+                <span class="text-white text-4xl md:text-6xl font-bold">Smart City Platform</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
+                🚀 Transform your city with AI-powered civic engagement! Report issues, track progress, earn rewards, and be part of the solution! 🌟
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'citizen_register' %}" class="group relative bg-gradient-to-r from-blue-500 to-purple-600 text-white px-10 py-4 rounded-full text-xl font-bold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-blue-500/50">
+                        <span class="relative z-10 flex items-center space-x-3">
+                            <i data-lucide="user-plus" class="w-6 h-6"></i>
+                            <span>Join as Citizen</span>
+                            <i data-lucide="arrow-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300"></i>
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </a>
+                    <a href="{% url 'staff_login' %}" class="group glass-morphism text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 border border-white/30">
+                        <span class="flex items-center space-x-2">
+                            <i data-lucide="shield" class="w-5 h-5"></i>
+                            <span>Staff Portal</span>
+                        </span>
+                    </a>
+                {% else %}
+                    {% if user.userprofile.role == 'Citizen' %}
+                        <a href="{% url 'citizen_dashboard' %}" class="group bg-gradient-to-r from-blue-500 to-purple-600 text-white px-10 py-4 rounded-full text-xl font-bold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-110 shadow-2xl">
+                            <span class="flex items-center space-x-2">
+                                <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+                                <span>My Dashboard</span>
+                            </span>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'staff_dashboard' %}" class="group bg-gradient-to-r from-green-500 to-teal-600 text-white px-10 py-4 rounded-full text-xl font-bold hover:from-green-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-110 shadow-2xl">
+                            <span class="flex items-center space-x-2">
+                                <i data-lucide="settings" class="w-6 h-6"></i>
+                                <span>Staff Dashboard</span>
+                            </span>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating elements -->
+    <div class="absolute top-1/4 left-10 float">
+        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-2xl">
+            <i data-lucide="map-pin" class="w-8 h-8 text-white"></i>
+        </div>
+    </div>
+    <div class="absolute bottom-1/4 right-10 float" style="animation-delay: 2s;">
+        <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-2xl">
+            <i data-lucide="trophy" class="w-10 h-10 text-white"></i>
+        </div>
+    </div>
+    <div class="absolute top-1/2 right-20 float" style="animation-delay: 4s;">
+        <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl">
+            <i data-lucide="users" class="w-7 h-7 text-white"></i>
+        </div>
+    </div>
+    <div class="absolute bottom-1/3 left-20 float" style="animation-delay: 3s;">
+        <div class="w-12 h-12 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center shadow-2xl">
+            <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-20 glass-morphism">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-5xl font-black text-white mb-4">
+                Our <span class="bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">Impact</span> So Far
+            </h2>
+            <p class="text-white/80 text-lg">Real numbers from our community-driven platform</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center group slide-in-left">
+                <div class="relative">
+                    <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-500 shadow-2xl group-hover:shadow-blue-500/50">
+                        <i data-lucide="file-text" class="w-12 h-12 text-white"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center animate-bounce">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <div class="text-6xl font-black bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent mb-2">{{ total_issues }}</div>
+                <div class="text-white/80 font-medium text-lg">Total Issues Reported</div>
+                <div class="mt-2 text-sm text-white/60">Community-driven reports</div>
+            </div>
+
+            <div class="text-center group fade-in-up" style="animation-delay: 0.2s;">
+                <div class="relative">
+                    <div class="w-32 h-32 bg-gradient-to-br from-green-500 to-teal-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-500 shadow-2xl group-hover:shadow-green-500/50">
+                        <i data-lucide="check-circle" class="w-12 h-12 text-white"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center animate-pulse">
+                        <i data-lucide="award" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <div class="text-6xl font-black bg-gradient-to-r from-green-300 to-teal-300 bg-clip-text text-transparent mb-2">{{ resolved_issues }}</div>
+                <div class="text-white/80 font-medium text-lg">Issues Resolved</div>
+                <div class="mt-2 text-sm text-white/60">Successfully completed</div>
+            </div>
+
+            <div class="text-center group slide-in-right" style="animation-delay: 0.4s;">
+                <div class="relative">
+                    <div class="w-32 h-32 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-500 shadow-2xl group-hover:shadow-purple-500/50">
+                        <i data-lucide="users" class="w-12 h-12 text-white"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center animate-bounce" style="animation-delay: 1s;">
+                        <i data-lucide="heart" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <div class="text-6xl font-black bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent mb-2">{{ active_users }}</div>
+                <div class="text-white/80 font-medium text-lg">Active Contributors</div>
+                <div class="mt-2 text-sm text-white/60">Dedicated community members</div>
+            </div>
+        </div>
+
+        <!-- Live Activity Indicator -->
+        <div class="mt-12 text-center">
+            <div class="inline-flex items-center space-x-3 glass-morphism px-6 py-3 rounded-full border border-white/20">
+                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <span class="text-white/80 font-medium">Live Activity</span>
+                <div class="flex -space-x-2">
+                    <div class="w-6 h-6 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full border-2 border-white"></div>
+                    <div class="w-6 h-6 bg-gradient-to-br from-green-400 to-teal-500 rounded-full border-2 border-white"></div>
+                    <div class="w-6 h-6 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full border-2 border-white"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 glass-morphism">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-black mb-6">
+                <span class="bg-gradient-to-r from-blue-300 via-purple-300 to-teal-300 bg-clip-text text-transparent">
+                    How It Works
+                </span>
+            </h2>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto">
+                🌟 Our platform connects citizens, government staff, and the community to solve civic issues efficiently with cutting-edge technology! 🚀
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="group bg-white/10 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/20 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl border border-white/20 slide-in-left">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                        <i data-lucide="plus-circle" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-ping"></div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-blue-300 transition-colors duration-300">Report Issues</h3>
+                <p class="text-white/80 leading-relaxed">Citizens can easily report civic issues with photos and detailed descriptions using our AI-powered categorization system. 📸✨</p>
+                <div class="mt-4 flex items-center text-blue-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span class="text-sm font-medium">Learn more</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="group bg-white/10 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/20 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl border border-white/20 fade-in-up" style="animation-delay: 0.1s;">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                        <i data-lucide="activity" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-green-300 transition-colors duration-300">Track Progress</h3>
+                <p class="text-white/80 leading-relaxed">Real-time status updates keep you informed about the resolution progress of your reported issues. 📊⚡</p>
+                <div class="mt-4 flex items-center text-green-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span class="text-sm font-medium">View updates</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="group bg-white/10 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/20 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl border border-white/20 slide-in-right" style="animation-delay: 0.2s;">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                        <i data-lucide="users" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full animate-bounce"></div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-purple-300 transition-colors duration-300">Community Power</h3>
+                <p class="text-white/80 leading-relaxed">Public board allows community members to participate in resolving issues and earn rewards. 🤝🎉</p>
+                <div class="mt-4 flex items-center text-purple-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span class="text-sm font-medium">Join community</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="group bg-white/10 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/20 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl border border-white/20 slide-in-left" style="animation-delay: 0.3s;">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                        <i data-lucide="bar-chart-3" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-teal-300 transition-colors duration-300">Smart Analytics</h3>
+                <p class="text-white/80 leading-relaxed">Staff can access comprehensive analytics with interactive charts and heatmaps for better decision making. 📈🧠</p>
+                <div class="mt-4 flex items-center text-teal-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span class="text-sm font-medium">View insights</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="group bg-white/10 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/20 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl border border-white/20 fade-in-up" style="animation-delay: 0.4s;">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                        <i data-lucide="bot" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full animate-bounce" style="animation-delay: 2s;"></div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-indigo-300 transition-colors duration-300">AI Assistant</h3>
+                <p class="text-white/80 leading-relaxed">Intelligent chatbot helps citizens during issue reporting and provides smart categorization suggestions. 🤖💬</p>
+                <div class="mt-4 flex items-center text-indigo-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span class="text-sm font-medium">Chat now</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </div>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="group bg-white/10 backdrop-blur-sm p-8 rounded-3xl hover:bg-white/20 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl border border-white/20 slide-in-right" style="animation-delay: 0.5s;">
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                        <i data-lucide="trophy" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-ping" style="animation-delay: 3s;"></div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-4 group-hover:text-yellow-300 transition-colors duration-300">Gamification</h3>
+                <p class="text-white/80 leading-relaxed">Earn points, badges, and climb the leaderboard while contributing to community improvement. 🏆🎮</p>
+                <div class="mt-4 flex items-center text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span class="text-sm font-medium">View rewards</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Demo Section -->
+        <div class="mt-16 text-center">
+            <div class="glass-morphism p-8 rounded-3xl max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-white mb-4">🚀 Ready to Make an Impact?</h3>
+                <p class="text-white/80 mb-6">Join thousands of citizens already using Ecologic to improve their communities</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <div class="flex items-center space-x-3 text-green-300">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>Report issues instantly</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-blue-300">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>Track progress in real-time</span>
+                    </div>
+                    <div class="flex items-center space-x-3 text-purple-300">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>Earn rewards & recognition</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 relative overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-float"></div>
+        <div class="absolute bottom-10 right-10 w-16 h-16 bg-white/10 rounded-full animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/4 w-12 h-12 bg-white/10 rounded-full animate-float" style="animation-delay: 4s;"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="mb-8">
+            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full mb-6">
+                <i data-lucide="rocket" class="w-5 h-5 text-yellow-300 animate-bounce"></i>
+                <span class="text-white font-medium">Join the Movement</span>
+                <i data-lucide="rocket" class="w-5 h-5 text-yellow-300 animate-bounce"></i>
+            </div>
+            <h2 class="text-4xl md:text-6xl font-black text-white mb-6">
+                Ready to Make a <span class="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">Difference</span>? 🌟
+            </h2>
+            <p class="text-xl text-white/90 mb-12 max-w-3xl mx-auto">
+                Join thousands of citizens and government officials working together to create better communities with technology! 🚀
+            </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+            <a href="{% url 'public_board' %}" class="group bg-white text-blue-600 px-10 py-4 rounded-full text-xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-white/25">
+                <span class="flex items-center space-x-3">
+                    <i data-lucide="eye" class="w-6 h-6"></i>
+                    <span>View Public Issues</span>
+                    <i data-lucide="arrow-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </span>
+            </a>
+            <a href="{% url 'leaderboard' %}" class="group bg-transparent border-2 border-white text-white px-10 py-4 rounded-full text-xl font-bold hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-110 shadow-2xl hover:shadow-white/25">
+                <span class="flex items-center space-x-3">
+                    <i data-lucide="trophy" class="w-6 h-6"></i>
+                    <span>View Leaderboard</span>
+                    <i data-lucide="star" class="w-6 h-6 group-hover:scale-110 transition-transform duration-300"></i>
+                </span>
+            </a>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="glass-morphism p-8 rounded-3xl max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="text-center">
+                    <div class="text-3xl font-black text-white mb-2">10K+</div>
+                    <div class="text-white/80">Issues Resolved</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-white mb-2">5K+</div>
+                    <div class="text-white/80">Active Citizens</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-white mb-2">50+</div>
+                    <div class="text-white/80">Cities Covered</div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center items-center gap-6 text-white/60">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-green-400"></i>
+                    <span>Mumbai</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-blue-400"></i>
+                    <span>Delhi</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-purple-400"></i>
+                    <span>Bangalore</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-teal-400"></i>
+                    <span>Chennai</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                    <span>And 45+ more cities</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-20 glass-morphism">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-black mb-6">
+                <span class="bg-gradient-to-r from-green-300 to-teal-300 bg-clip-text text-transparent">
+                    What People Say
+                </span>
+            </h2>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto">
+                Hear from citizens and officials who are making a difference! 💬
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="glass-morphism p-6 rounded-3xl border border-white/20 slide-in-left">
+                <div class="flex items-center space-x-1 mb-4">
+                    {% for i in "12345" %}
+                        <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-current"></i>
+                    {% endfor %}
+                </div>
+                <p class="text-white/90 mb-6 italic">
+                    "Ecologic has transformed how we handle civic issues. The AI categorization saves us hours of work!"
+                </p>
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-semibold">Rajesh Kumar</div>
+                        <div class="text-white/60 text-sm">Municipal Officer, Mumbai</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="glass-morphism p-6 rounded-3xl border border-white/20 fade-in-up" style="animation-delay: 0.2s;">
+                <div class="flex items-center space-x-1 mb-4">
+                    {% for i in "12345" %}
+                        <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-current"></i>
+                    {% endfor %}
+                </div>
+                <p class="text-white/90 mb-6 italic">
+                    "As a citizen, I love being able to track my issue reports and earn points for community participation!"
+                </p>
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-teal-500 rounded-full flex items-center justify-center">
+                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-semibold">Priya Sharma</div>
+                        <div class="text-white/60 text-sm">Citizen Activist, Delhi</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="glass-morphism p-6 rounded-3xl border border-white/20 slide-in-right" style="animation-delay: 0.4s;">
+                <div class="flex items-center space-x-1 mb-4">
+                    {% for i in "12345" %}
+                        <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-current"></i>
+                    {% endfor %}
+                </div>
+                <p class="text-white/90 mb-6 italic">
+                    "The gamification aspect makes reporting issues fun and engaging. Our community response rate has increased by 300%!"
+                </p>
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center">
+                        <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-semibold">Dr. Amit Patel</div>
+                        <div class="text-white/60 text-sm">Community Leader, Bangalore</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Enhanced home page interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Counter animation for statistics
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target + (element.textContent.includes('+') ? '+' : '');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + (element.textContent.includes('+') ? '+' : '');
+                }
+            }, 20);
+        }
+
+        // Animate counters when they come into view
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('[data-counter]');
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.getAttribute('data-counter'));
+                        animateCounter(counter, target);
+                    });
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe stats section
+        const statsSection = document.querySelector('.py-20.glass-morphism');
+        if (statsSection) {
+            counterObserver.observe(statsSection);
+        }
+
+        // Add data-counter attributes to stats
+        const statNumbers = document.querySelectorAll('.text-6xl.font-black');
+        statNumbers.forEach(stat => {
+            const text = stat.textContent;
+            const number = parseInt(text.replace(/[^\d]/g, ''));
+            stat.setAttribute('data-counter', number);
+        });
+
+        // Enhanced feature card interactions
+        const featureCards = document.querySelectorAll('.group.bg-white\\/10');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                // Add a subtle glow effect
+                this.style.boxShadow = '0 0 30px rgba(59, 130, 246, 0.3)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '';
+            });
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+
+            const floatingElements = document.querySelectorAll('.float');
+            floatingElements.forEach(element => {
+                element.style.transform = `translateY(${rate * 0.1}px)`;
+            });
+        });
+
+        // Enhanced text animation (without breaking gradients)
+        const heroText = document.querySelector('h1.text-6xl');
+        if (heroText) {
+            // Add a subtle fade-in animation instead of typing effect
+            heroText.style.opacity = '0';
+            heroText.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                heroText.style.transition = 'all 1s ease-out';
+                heroText.style.opacity = '1';
+                heroText.style.transform = 'translateY(0)';
+            }, 500);
+        }
+
+        // Add shimmer effect to gradient text
+        const gradientTexts = document.querySelectorAll('[class*="bg-gradient-to"]');
+        gradientTexts.forEach(text => {
+            text.addEventListener('mouseenter', function() {
+                this.style.animation = 'shimmer 2s ease-in-out';
+            });
+
+            text.addEventListener('mouseleave', function() {
+                this.style.animation = '';
+            });
+        });
+
+        // Smooth scroll for CTA buttons
+        const ctaButtons = document.querySelectorAll('a[href^="#"]');
+        ctaButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add click tracking for analytics
+        const trackableElements = document.querySelectorAll('a, button');
+        trackableElements.forEach(element => {
+            element.addEventListener('click', function() {
+                // You can add analytics tracking here
+                console.log('Clicked:', this.textContent.trim());
+            });
+        });
+
+        // Dynamic background color change based on scroll
+        window.addEventListener('scroll', debounce(function() {
+            const scrollPosition = window.scrollY;
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = scrollPosition / maxScroll;
+
+            // Subtle color shift based on scroll
+            const hue = 220 + (scrollPercent * 40); // Blue to purple range
+            document.body.style.filter = `hue-rotate(${hue - 220}deg)`;
+        }, 10));
+
+        // Utility function for debouncing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Add loading animation for images
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            img.addEventListener('load', function() {
+                this.classList.add('fade-in');
+            });
+        });
+
+        // Enhanced mobile menu toggle with animation
+        const mobileMenuBtn = document.querySelector('.md\\:hidden button');
+        const mobileMenu = document.querySelector('.hidden.md\\:hidden');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                const icon = this.querySelector('[data-lucide]');
+                if (icon) {
+                    const isOpen = !mobileMenu.classList.contains('hidden');
+                    icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                    lucide.createIcons();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
